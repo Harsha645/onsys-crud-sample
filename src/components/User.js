@@ -1,8 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const User = () => {
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadUsers();
@@ -10,19 +12,25 @@ export const User = () => {
 
   function loadUsers() {
     axios.get("http://localhost:8080/users").then((response) => {
-      console.log(response.data);
       setUsers(response.data);
     });
   }
 
   function deleteUser(id) {
-    console.log(id)
     axios.delete(`http://localhost:8080/users/${id}`).then((response) => {
       loadUsers();
     });
   }
   return (
     <>
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={() => navigate(`/contact`)}
+      >
+        Add New User
+      </button>
+
       <table className="table">
         <thead>
           <tr>
@@ -41,11 +49,24 @@ export const User = () => {
               <td>{user.email}</td>
               <td>{user.password}</td>
               <td>
-                <button type="button" className="btn btn-primary">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => navigate(`/update-user/${user.id}`)}
+                >
                   Update
                 </button>
-                <button type="button" className="btn btn-danger"
-                onClick={() => deleteUser(user.id)}
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  onClick={() => navigate(`/view-user/${user.id}`)}
+                >
+                  View
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={() => deleteUser(user.id)}
                 >
                   Delete
                 </button>

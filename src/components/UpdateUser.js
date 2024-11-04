@@ -1,37 +1,53 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-export const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+export const UpdateUser = () => {
+    const { id } = useParams();
 
-  const { name, email, password } = formData;
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const onChange = (e) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
-  };
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: "",
+      });
+    
+      const { name, email, password } = formData;
+      
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    console.log(formData);
-    await axios.post("http://localhost:8080/users", formData)
-    .then((response) => {
-      navigate('/more')
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  };
+      const onChange = (e) => {
+        setFormData((prevState) => ({
+          ...prevState,
+          [e.target.name]: e.target.value,
+        }));
+      };
 
+      useEffect(() => {
+        getUser();
+      },[])
+      
+      function getUser(){
+        axios.get("http://localhost:8080/users/" + id)
+        .then((response) => {
+          setFormData(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      }
 
+      const onSubmit = async (e) => {
+        e.preventDefault();
+        await axios.put("http://localhost:8080/users/" + id, formData)
+        .then((response) => {
+          console.log(response);
+          navigate('/more')
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      };
   return (
     <>
       <form
@@ -79,13 +95,17 @@ export const Contact = () => {
           />
         </div>
         <div className="form-group form-check">
-          <input type="checkbox" className="form-check-input" id="exampleCheck1" />
+          <input
+            type="checkbox"
+            className="form-check-input"
+            id="exampleCheck1"
+          />
           <label className="form-check-label" for="exampleCheck1">
             Check me out
           </label>
         </div>
         <button type="submit" className="btn btn-primary" onClick={onSubmit}>
-          Submit
+          Update
         </button>
       </form>
     </>
