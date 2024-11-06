@@ -50,6 +50,11 @@ export const UserTable = () => {
     setViewForm(false);
     setViewForm(true);
   }
+
+  const handleUserCreated = (newUser) => {
+    setUsers(prevUsers => [...prevUsers, newUser]);
+    setViewCreateForm(false);
+  };
   return (
     <>
       <button
@@ -60,7 +65,7 @@ export const UserTable = () => {
         Add New User
       </button>
 
-      {viewCreateForm ? <UserCreateForm onUserCreated={loadUsers} /> : ""}
+      {viewCreateForm ? <UserCreateForm onUserCreated={handleUserCreated} /> : ""}
 
       {viewUpdateForm ? (
         <UserUpdateForm userId={selectedUserId} onUserUpdated={loadUsers} />

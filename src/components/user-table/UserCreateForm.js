@@ -19,11 +19,10 @@ export const UserCreateForm = ({ onUserCreated }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     await axios
       .post("http://localhost:8080/users", formData)
       .then((response) => {
-        onUserCreated();
+        onUserCreated(response.data);
       })
       .catch((error) => {
         console.log(error);
